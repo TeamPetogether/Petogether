@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
+import axios from 'axios';
 
 export default function SignupScreen({ navigation }) {
   const [nickname, setNickname] = useState('');
@@ -16,7 +17,7 @@ export default function SignupScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [confirmPw, setConfirmPw] = useState('');
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!nickname || !email || !password || !confirmPw) {
       Alert.alert('모든 항목을 입력해주세요.');
       return;
@@ -27,8 +28,19 @@ export default function SignupScreen({ navigation }) {
       return;
     }
 
-    console.log('회원가입 요청:', { nickname, email, password });
-    // TODO: 실제 회원가입 API 연동
+    try {
+      const res = await axios.post('http://192.168.45.36:8000/signup', {
+        nickname,
+        email,
+        password,
+      });
+      console.log('회원가입 성공:', res.data);
+      Alert.alert('회원가입 완료! 로그인 해주세요.');
+      navigation.navigate('Login');
+    } catch (err) {
+      console.log('회원가입 실패:', err.response?.data || err.message);
+      Alert.alert('회원가입 실패', err.response?.data?.detail || '알 수 없는 오류');
+    }
   };
 
   return (
@@ -55,21 +67,30 @@ export default function SignupScreen({ navigation }) {
           keyboardType="email-address"
         />
         <TextInput
-          style={styles.input}
-          placeholder="비밀번호"
-          placeholderTextColor="#aaa"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
+        style={styles.input}
+        placeholder="비밀번호"
+        placeholderTextColor="#aaa"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={true}
+        textContentType="oneTimeCode"  // 핵심: password 대신 이걸로 속이기
+        autoComplete="off"
+        autoCorrect={false}
+        autoCapitalize="none"
+        importantForAutofill="no"
         />
         <TextInput
-          style={styles.input}
-          placeholder="비밀번호 확인"
-          placeholderTextColor="#aaa"
-          secureTextEntry
-          value={confirmPw}
-          onChangeText={setConfirmPw}
-        />
+        style={styles.input}
+        placeholder="비밀번호 확인"
+        placeholderTextColor="#aaa"
+        secureTextEntry
+        value={confirmPw}
+        onChangeText={setConfirmPw}
+        textContentType="none"
+        autoComplete="off"
+        autoCorrect={false}
+        importantForAutofill="no"
+        />  
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
           <Text style={styles.buttonText}>회원가입</Text>
         </TouchableOpacity>
