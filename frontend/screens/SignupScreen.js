@@ -1,4 +1,4 @@
-// screens/LoginScreen.js
+// screens/SignupScreen.js
 import React, { useState } from 'react';
 import {
   SafeAreaView,
@@ -7,15 +7,28 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
 
-export default function LoginScreen({ navigation }) {
+export default function SignupScreen({ navigation }) {
+  const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
 
-  const handleLogin = () => {
-    console.log('로그인 시도:', email, password);
-    // TODO: 로그인 API 연동
+  const handleSignup = () => {
+    if (!nickname || !email || !password || !confirmPw) {
+      Alert.alert('모든 항목을 입력해주세요.');
+      return;
+    }
+
+    if (password !== confirmPw) {
+      Alert.alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    console.log('회원가입 요청:', { nickname, email, password });
+    // TODO: 실제 회원가입 API 연동
   };
 
   return (
@@ -28,6 +41,13 @@ export default function LoginScreen({ navigation }) {
       <View style={styles.form}>
         <TextInput
           style={styles.input}
+          placeholder="닉네임"
+          placeholderTextColor="#aaa"
+          value={nickname}
+          onChangeText={setNickname}
+        />
+        <TextInput
+          style={styles.input}
           placeholder="이메일"
           placeholderTextColor="#aaa"
           value={email}
@@ -38,17 +58,25 @@ export default function LoginScreen({ navigation }) {
           style={styles.input}
           placeholder="비밀번호"
           placeholderTextColor="#aaa"
+          secureTextEntry
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
         />
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>로그인</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="비밀번호 확인"
+          placeholderTextColor="#aaa"
+          secureTextEntry
+          value={confirmPw}
+          onChangeText={setConfirmPw}
+        />
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>회원가입</Text>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-        <Text style={styles.signupText}>아직 계정이 없으신가요? 회원가입</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.loginText}>이미 계정이 있으신가요? 로그인</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -65,7 +93,7 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 36,
     fontWeight: 'bold',
-    marginBottom: 50,
+    marginBottom: 40,
   },
   logoGreen: {
     color: '#66A95A',
@@ -75,7 +103,7 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   input: {
     height: 48,
@@ -84,7 +112,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 15,
-    marginBottom: 15,
+    marginBottom: 12,
     fontSize: 16,
   },
   button: {
@@ -92,14 +120,14 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 8,
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
-  signupText: {
+  loginText: {
     marginTop: 10,
     color: '#888',
     textDecorationLine: 'underline',
