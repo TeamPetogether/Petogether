@@ -83,14 +83,15 @@ export default function SignupScreen({ navigation }) {
         style={styles.input}
         placeholder="비밀번호 확인"
         placeholderTextColor="#aaa"
-        secureTextEntry
-        value={confirmPw}
-        onChangeText={setConfirmPw}
-        textContentType="none"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={true}
+        textContentType="oneTimeCode"  // 핵심: password 대신 이걸로 속이기
         autoComplete="off"
         autoCorrect={false}
+        autoCapitalize="none"
         importantForAutofill="no"
-        />  
+        />
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
           <Text style={styles.buttonText}>회원가입</Text>
         </TouchableOpacity>
