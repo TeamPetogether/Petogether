@@ -1,4 +1,3 @@
-// screens/SignupScreen.js
 import React, { useState } from 'react';
 import {
   SafeAreaView,
@@ -29,7 +28,7 @@ export default function SignupScreen({ navigation }) {
     }
 
     try {
-      const res = await axios.post('http://192.168.45.36:8000/signup', {
+      const res = await axios.post('http://192.168.45.76:8000/signup', {
         nickname,
         email,
         password,
@@ -57,6 +56,8 @@ export default function SignupScreen({ navigation }) {
           placeholderTextColor="#aaa"
           value={nickname}
           onChangeText={setNickname}
+          autoComplete="off"
+          autoCorrect={false}
         />
         <TextInput
           style={styles.input}
@@ -65,32 +66,33 @@ export default function SignupScreen({ navigation }) {
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
+          autoCapitalize="none"
+          autoComplete="email"
+          autoCorrect={false}
         />
         <TextInput
-        style={styles.input}
-        placeholder="비밀번호"
-        placeholderTextColor="#aaa"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-        textContentType="oneTimeCode"  // 핵심: password 대신 이걸로 속이기
-        autoComplete="off"
-        autoCorrect={false}
-        autoCapitalize="none"
-        importantForAutofill="no"
+          style={styles.input}
+          placeholder="비밀번호"
+          placeholderTextColor="#aaa"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={true}
+          textContentType="oneTimeCode"
+          autoComplete="off"
+          autoCorrect={false}
+          autoCapitalize="none"
         />
         <TextInput
-        style={styles.input}
-        placeholder="비밀번호 확인"
-        placeholderTextColor="#aaa"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-        textContentType="oneTimeCode"  // 핵심: password 대신 이걸로 속이기
-        autoComplete="off"
-        autoCorrect={false}
-        autoCapitalize="none"
-        importantForAutofill="no"
+          style={styles.input}
+          placeholder="비밀번호 확인"
+          placeholderTextColor="#aaa"
+          value={confirmPw}
+          onChangeText={setConfirmPw}
+          secureTextEntry={true}
+          textContentType="oneTimeCode"
+          autoComplete="off"
+          autoCorrect={false}
+          autoCapitalize="none"
         />
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
           <Text style={styles.buttonText}>회원가입</Text>

@@ -15,20 +15,22 @@ export default function LoginScreen({ navigation }) {
     const [password, setPassword] = useState('');
   
     const handleLogin = async () => {
+      console.log('로그인 시도:', email, password); // ✅ 1단계
+    
       try {
-        const res = await axios.post('http://192.168.45.36:8000/login', {
+        const res = await axios.post('http://192.168.45.76:8000/login', {
           email,
           password,
         });
+    
+        console.log('로그인 응답:', res.status, res.data); // ✅ 2단계
+    
         if (res.status === 200) {
-            navigation.navigate('Main');  // ✅ 로그인 성공 시 MainScreen으로 이동
-          } else {
-            Alert.alert('로그인 실패', '이메일이나 비밀번호가 올바르지 않습니다.');
-          }
-        } catch (error) {
-          Alert.alert('오류 발생', '서버와 통신 중 문제가 발생했습니다.');
-          console.log(error);
+          navigation.navigate('Main');
         }
+      } catch (error) {
+        console.log('로그인 실패:', error.response?.data || error.message); // ✅ 3단계
+      }
     };
   
     return (
