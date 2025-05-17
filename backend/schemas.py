@@ -8,3 +8,15 @@ class UserCreate(BaseModel):
 class UserLogin(BaseModel):
     email: str
     password: str
+
+class NoteCreate(BaseModel):
+    date: str
+    note: str
+
+class NoteResponse(BaseModel):
+    date: str
+    note: str
+    image_path: str
+
+    class Config:
+        from_attributes = True
