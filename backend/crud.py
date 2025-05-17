@@ -31,3 +31,17 @@ def authenticate_user(db: Session, email: str, password: str):
     if user and user.password == password:  
         return user
     return None
+
+
+def create_note(db: Session, note: schemas.NoteCreate, image_path: str):
+    db_note = models.Note(date=note.date, note=note.note, image_path=image_path)
+    db.add(db_note)
+    db.commit()
+    db.refresh(db_note)
+    return db_note
+
+def get_notes_dates(db: Session):
+    return db.query(models.Note.date).distinct().all()
+
+def get_note_by_date(db: Session, date: str):
+    return db.query(models.Note).filter(models.Note.date == date).first()
