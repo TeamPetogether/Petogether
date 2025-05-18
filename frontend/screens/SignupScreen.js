@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import axios from 'axios';
+import { API_BASE_URL } from '../constants';
 
 export default function SignupScreen({ navigation }) {
   const [nickname, setNickname] = useState('');
@@ -28,7 +29,7 @@ export default function SignupScreen({ navigation }) {
     }
 
     try {
-      const res = await axios.post('http://192.168.45.76:8000/signup', {
+      const res = await axios.post(`${API_BASE_URL}/signup`, {
         nickname,
         email,
         password,

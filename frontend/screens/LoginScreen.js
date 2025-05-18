@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { API_BASE_URL } from '../constants';
+
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
@@ -18,7 +20,7 @@ export default function LoginScreen({ navigation }) {
       console.log('로그인 시도:', email, password); // ✅ 1단계
     
       try {
-        const res = await axios.post('http://192.168.45.76:8000/login', {
+        const res = await axios.post(`${API_BASE_URL}/login`, {
           email,
           password,
         });
