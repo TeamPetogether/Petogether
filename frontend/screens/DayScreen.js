@@ -1,12 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Image, Button, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { API_BASE_URL } from '../constants'; // 예: http://192.168.0.10:8000
 
 export default function DayScreen({ route }) {
   const { selectedDate } = route.params;
   const [note, setNote] = useState('');
   const [imageUri, setImageUri] = useState(null);
+  const [isLocalImage, setIsLocalImage] = useState(false); // 로컬 이미지 여부
 
+  // imageUri 변경 감지
+  useEffect(() => {
+    console.log("imageUri:", imageUri);
+  }, [imageUri]);
+
+  // 날짜별 메모 및 이미지 불러오기
+  useEffect(() => {
+    const fetchNote = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/notes/${selectedDate}`);
+        if (res.status === 200) {
+          const data = await res.json();
+          setNote(data.note);
+          if (data.image_path) {
+            setImageUri(`${API_BASE_URL}/${data.image_path.replace(/^\/?/, '')}`);
+            setIsLocalImage(false);
+          }
+        }
+      } catch (err) {
+        console.log("불러오기 실패:", err);
+      }
+    };
+
+    fetchNote();
+  }, [selectedDate]);
+
+  // 갤러리 접근 권한 요청
   useEffect(() => {
     (async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -16,6 +45,7 @@ export default function DayScreen({ route }) {
     })();
   }, []);
 
+  // 이미지 선택
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -24,14 +54,44 @@ export default function DayScreen({ route }) {
 
     if (!result.canceled) {
       setImageUri(result.assets[0].uri);
+      setIsLocalImage(true); // 로컬 이미지임
     }
   };
 
-  const handleSave = () => {
-    console.log('메모:', note);
-    console.log('이미지 URI:', imageUri);
-    Alert.alert('저장됨', `${selectedDate}의 기록이 저장되었습니다.`);
-    // 👉 다음 단계: FastAPI 백엔드로 POST 요청 (image + note)
+  // 저장 요청
+  const handleSave = async () => {
+    const formData = new FormData();
+    formData.append('date', selectedDate);
+    formData.append('note', note);
+
+    if (isLocalImage && imageUri) {
+      const filename = imageUri.split('/').pop();
+      const match = /\.(\w+)$/.exec(filename ?? '');
+      const type = match ? `image/${match[1]}` : `image`;
+
+      formData.append('image', {
+        uri: imageUri,
+        name: filename,
+        type,
+      });
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/notes/`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const result = await res.json();
+      console.log(result);
+      Alert.alert('저장 성공', '서버에 메모가 저장되었습니다!');
+    } catch (err) {
+      console.error(err);
+      Alert.alert('에러', '저장 중 문제가 발생했습니다.');
+    }
   };
 
   return (
@@ -40,7 +100,11 @@ export default function DayScreen({ route }) {
 
       <TouchableOpacity onPress={pickImage}>
         <Image
-          source={imageUri ? { uri: imageUri } : require('../assets/placeholder.png')}
+          source={
+            imageUri
+              ? { uri: imageUri }
+              : require('../assets/placeholder.png')
+          }
           style={styles.image}
           resizeMode="cover"
         />
