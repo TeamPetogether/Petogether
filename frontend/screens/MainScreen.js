@@ -1,8 +1,11 @@
-// screens/LoginScreen.js
+// screens/MainScreen.js
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function LoginScreen() {
+export default function MainScreen() {
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.logo}>
@@ -11,13 +14,24 @@ export default function LoginScreen() {
       </Text>
 
       <View style={styles.buttonWrapper}>
-        <TouchableOpacity style={styles.ovalButton}>
-          <Text style={styles.buttonText}>Daily</Text>
+        <TouchableOpacity
+          style={styles.ovalButton}
+          onPress={() => navigation.navigate('Daily')}  // ✅ DailyScreen으로 이동
+        >
+          <Text style={styles.buttonText}>데일리</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.ovalButton}>
+
+        <TouchableOpacity
+          style={styles.ovalButton}
+          onPress={() => console.log('산책 버튼 눌림')}
+        >
           <Text style={styles.buttonText}>산책</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.ovalButton}>
+
+        <TouchableOpacity
+          style={styles.ovalButton}
+          onPress={() => console.log('접종 버튼 눌림')}
+        >
           <Text style={styles.buttonText}>접종</Text>
         </TouchableOpacity>
       </View>
@@ -28,7 +42,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF9F1', // 배경색 연한 베이지 느낌
+    backgroundColor: '#FFF9F1',
     justifyContent: 'center',
     alignItems: 'center',
   },
