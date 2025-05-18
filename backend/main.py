@@ -70,9 +70,10 @@ async def create_note(
     return JSONResponse(content={"message": "저장 완료", "note_id": new_note.id})
 
 @app.get("/notes/dates")
-def get_dates(db: Session = Depends(get_db)):
-    result = crud.get_notes_dates(db)
-    return [r[0] for r in result]
+def get_note_dates():
+    db: Session = SessionLocal()
+    dates = db.query(models.Note.date).distinct().all()
+    return [d[0] for d in dates]  # ['2025-05-15', '2025-05-16', ...]
 
 @app.get("/notes/{date}")
 def get_note_by_date(date: str):
