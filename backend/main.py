@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Depends, UploadFile, File, Form, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from . import models, schemas, crud
@@ -18,6 +20,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# 정적 파일 서빙 설정 추가
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 def get_db():
     db = SessionLocal()
@@ -39,36 +47,41 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return {"nickname": db_user.nickname, "email": db_user.email}
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-UPLOAD_DIR = "uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-
 @app.post("/notes/")
-async def upload_note(
-    note: str = Form(...),
+async def create_note(
     date: str = Form(...),
-    image: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    note: str = Form(...),
+    image: UploadFile = File(None)
 ):
-    filepath = f"{UPLOAD_DIR}/{date}_{image.filename}"
-    with open(filepath, "wb") as buffer:
-        shutil.copyfileobj(image.file, buffer)
-    return crud.create_note(db, schemas.NoteCreate(date=date, note=note), image_path=filepath)
+    db: Session = SessionLocal()
+
+    image_path = ""
+    if image:
+        image_filename = f"{date}_{image.filename}"
+        image_path = os.path.join(UPLOAD_DIR, image_filename)
+        with open(image_path, "wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+
+    new_note = models.Note(date=date, note=note, image_path=image_path)
+    db.add(new_note)
+    db.commit()
+    db.refresh(new_note)
+
+    return JSONResponse(content={"message": "저장 완료", "note_id": new_note.id})
 
 @app.get("/notes/dates")
 def get_dates(db: Session = Depends(get_db)):
     result = crud.get_notes_dates(db)
     return [r[0] for r in result]
 
-@app.get("/notes/{date}", response_model=schemas.NoteResponse)
-def get_note(date: str, db: Session = Depends(get_db)):
-    note = crud.get_note_by_date(db, date)
-    if not note:
-        raise HTTPException(status_code=404, detail="Note not found")
-    return note
+@app.get("/notes/{date}")
+def get_note_by_date(date: str):
+    db: Session = SessionLocal()
+    note = db.query(models.Note).filter(models.Note.date == date).first()
+    if note:
+        return {
+            "date": note.date,
+            "note": note.note,
+            "image_path": note.image_path,
+        }
+    return JSONResponse(status_code=404, content={"message": "No note found"})
