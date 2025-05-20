@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 300,
-    height: 220,
+    height: 300,
     borderRadius: 12,
     backgroundColor: '#ddd',
   },
