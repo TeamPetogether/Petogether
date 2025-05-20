@@ -96,7 +96,7 @@ export default function DayScreen({ route }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>{selectedDate} 기록</Text>
+      <Text style={styles.title}>✏️ {selectedDate} 기록</Text>
 
       <TouchableOpacity onPress={pickImage}>
         <Image
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 100,
     fontSize: 24,
+    color: '#2c1a0b',
     fontWeight: 'bold',
     marginBottom: 16,
   },
