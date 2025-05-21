@@ -49,15 +49,15 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     return {"nickname": db_user.nickname, "email": db_user.email}
 
 @app.post("/notes/")
-async def create_or_replace_note(
+async def create_or_update_note(
     date: str = Form(...),
     note: str = Form(...),
     image: UploadFile = File(None)
 ):
     db: Session = SessionLocal()
 
-    # ✅ 기존 메모 삭제
-    db.query(models.Note).filter(models.Note.date == date).delete()
+    # 기존 노트가 있는지 확인
+    existing = db.query(models.Note).filter(models.Note.date == date).first()
 
     image_path = ""
     if image:
@@ -66,12 +66,18 @@ async def create_or_replace_note(
         with open(f"uploads/{filename}", "wb") as buffer:
             shutil.copyfileobj(image.file, buffer)
 
-    new_note = models.Note(date=date, note=note, image_path=image_path)
-    db.add(new_note)
-    db.commit()
-    db.refresh(new_note)
-
-    return {"message": "기록이 수정되었습니다"}
+    if existing:
+        existing.note = note
+        if image:  # 새 이미지가 있을 때만 덮어쓰기
+            existing.image_path = image_path
+        db.commit()
+        return {"message": "기록이 수정되었습니다"}
+    else:
+        new_note = models.Note(date=date, note=note, image_path=image_path)
+        db.add(new_note)
+        db.commit()
+        db.refresh(new_note)
+        return {"message": "기록이 저장되었습니다"}
 
 @app.get("/notes/dates")
 def get_note_dates():
