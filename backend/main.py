@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 import shutil, os
+import uuid  # uuid import 추가
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -48,18 +49,21 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     return {"nickname": db_user.nickname, "email": db_user.email}
 
 @app.post("/notes/")
-async def create_note(
+async def create_or_replace_note(
     date: str = Form(...),
     note: str = Form(...),
     image: UploadFile = File(None)
 ):
     db: Session = SessionLocal()
 
+    # ✅ 기존 메모 삭제
+    db.query(models.Note).filter(models.Note.date == date).delete()
+
     image_path = ""
     if image:
-        image_filename = f"{date}_{image.filename}"
-        image_path = os.path.join(UPLOAD_DIR, image_filename)
-        with open(image_path, "wb") as buffer:
+        filename = f"{date}_{uuid.uuid4().hex}.{image.filename.split('.')[-1]}"
+        image_path = f"/uploads/{filename}"
+        with open(f"uploads/{filename}", "wb") as buffer:
             shutil.copyfileobj(image.file, buffer)
 
     new_note = models.Note(date=date, note=note, image_path=image_path)
@@ -67,7 +71,7 @@ async def create_note(
     db.commit()
     db.refresh(new_note)
 
-    return JSONResponse(content={"message": "저장 완료", "note_id": new_note.id})
+    return {"message": "기록이 수정되었습니다"}
 
 @app.get("/notes/dates")
 def get_note_dates():
