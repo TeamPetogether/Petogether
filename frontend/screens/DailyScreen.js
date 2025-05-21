@@ -1,6 +1,6 @@
 // screens/DailyScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useNavigation } from '@react-navigation/native';
 import { API_BASE_URL } from '../constants';
@@ -14,8 +14,11 @@ export default function DailyScreen() {
     const fetchMarkedDates = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/notes/dates`);
-        const dates = await res.json();  // ['2025-05-15', '2025-05-16']
 
+        const text = await res.text();             // 먼저 텍스트로 받기
+        console.log("서버 응답:", text);
+
+        const dates = JSON.parse(text);            // 수동 파싱 (확실하게 예외 잡힘)
         const newMarked = {};
         dates.forEach(date => {
           newMarked[date] = { marked: true };
@@ -30,30 +33,38 @@ export default function DailyScreen() {
     fetchMarkedDates();
   }, []);
 
-  const handleDayPress = (day) => {
-    navigation.navigate('Day', { selectedDate: day.dateString });
-  };
-
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>🐱 Daily 🐶</Text>
       <Calendar
-        onDayPress={handleDayPress}
         markingType={'custom'}
         markedDates={markedDates}
         style={{
-          width: 350,
-          height: 380,          // ✅ 원하는 높이 지정
+          width: 360,
           borderRadius: 12,
-          paddingVertical: 10,  // ✅ 내부 여백 조절
+          paddingVertical: 10,
         }}
         dayComponent={({ date, state }) => {
           const isMarked = !!markedDates[date.dateString];
           return (
-            <View>
-              <Text style={{ textAlign: 'center', color: state === 'disabled' ? '#d9e1e8' : '#2d4150' }}>
-                {isMarked ? '🐾' : date.day}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Day', { selectedDate: date.dateString })}
+              style={{
+                minWidth: 44,
+                minHeight: 44,
+                paddingVertical: 12,
+                paddingHorizontal: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text style={{
+                fontSize: 20,
+                color: state === 'disabled' ? '#d9e1e8' : '#2d4150',
+              }}>
+                {isMarked ? '💖' : date.day}
               </Text>
-            </View>
+            </TouchableOpacity>
           );
         }}
         theme={{
@@ -72,7 +83,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF9F1',
     padding: 16,
-    justifyContent: 'center', // ✅ 세로 가운데 정렬
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#A1A5F5',
+    marginBottom: 20,
   },
 });
