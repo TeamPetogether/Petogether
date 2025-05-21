@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import { API_BASE_URL } from '../constants';
 
@@ -32,6 +33,21 @@ export default function LoginScreen({ navigation }) {
         }
       } catch (error) {
         console.log('로그인 실패:', error.response?.data || error.message); // ✅ 3단계
+        
+        // 로그인 실패 시 알림창 표시
+        if (error.response?.status === 401) {
+          Alert.alert(
+            '로그인 실패',
+            '이메일 또는 비밀번호가 일치하지 않습니다.',
+            [{ text: '확인' }]
+          );
+        } else {
+          Alert.alert(
+            '로그인 실패',
+            '로그인 중 문제가 발생했습니다. 다시 시도해주세요.',
+            [{ text: '확인' }]
+          );
+        }
       }
     };
   

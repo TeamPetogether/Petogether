@@ -19,12 +19,20 @@ export default function SignupScreen({ navigation }) {
 
   const handleSignup = async () => {
     if (!nickname || !email || !password || !confirmPw) {
-      Alert.alert('모든 항목을 입력해주세요.');
+      Alert.alert(
+        '입력 오류',
+        '모든 항목을 입력해주세요.',
+        [{ text: '확인' }]
+      );
       return;
     }
 
     if (password !== confirmPw) {
-      Alert.alert('비밀번호가 일치하지 않습니다.');
+      Alert.alert(
+        '비밀번호 불일치',
+        '비밀번호와 비밀번호 확인이 일치하지 않습니다.',
+        [{ text: '확인' }]
+      );
       return;
     }
 
@@ -35,11 +43,27 @@ export default function SignupScreen({ navigation }) {
         password,
       });
       console.log('회원가입 성공:', res.data);
-      Alert.alert('회원가입 완료! 로그인 해주세요.');
-      navigation.navigate('Login');
+      Alert.alert(
+        '회원가입 완료',
+        '회원가입이 완료되었습니다. 로그인 해주세요.',
+        [{ text: '확인', onPress: () => navigation.navigate('Login') }]
+      );
     } catch (err) {
       console.log('회원가입 실패:', err.response?.data || err.message);
-      Alert.alert('회원가입 실패', err.response?.data?.detail || '알 수 없는 오류');
+      
+      if (err.response?.status === 400) {
+        Alert.alert(
+          '회원가입 실패',
+          '이미 존재하는 이메일입니다.',
+          [{ text: '확인' }]
+        );
+      } else {
+        Alert.alert(
+          '회원가입 실패',
+          '회원가입 중 문제가 발생했습니다. 다시 시도해주세요.',
+          [{ text: '확인' }]
+        );
+      }
     }
   };
 
