@@ -82,11 +82,11 @@ def get_note_dates():
 @app.get("/notes/{date}")
 def get_note_by_date(date: str):
     db: Session = SessionLocal()
-    note = db.query(models.Note).filter(models.Note.date == date).first()
+    note = db.query(models.Note).filter(models.Note.date == date).order_by(models.Note.id.desc()).first()
     if note:
         return {
             "date": note.date,
             "note": note.note,
             "image_path": note.image_path,
         }
-    return JSONResponse(status_code=404, content={"message": "No note found"})
+    raise HTTPException(status_code=404, detail="No note found")
