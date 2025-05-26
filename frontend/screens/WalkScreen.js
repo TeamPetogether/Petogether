@@ -19,7 +19,19 @@ export default function WalkScreen() {
 
         const newMarked = {};
         dates.forEach(date => {
-          newMarked[date] = { marked: true };
+          newMarked[date] = {
+            customStyles: {
+              container: {
+                backgroundColor: '#fff',
+                borderRadius: 8,
+              },
+              text: {
+                color: '#000',
+                fontSize: 20,
+              },
+            },
+            isWalk: true,
+          };
         });
 
         setMarkedDates(newMarked);
@@ -33,7 +45,7 @@ export default function WalkScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🐾 Walk Record 🐾</Text>
+      <Text style={styles.title}>🌳 Walk Record 🌱</Text>
       <Calendar
         markingType={'custom'}
         markedDates={markedDates}
@@ -43,7 +55,9 @@ export default function WalkScreen() {
           paddingVertical: 10,
         }}
         dayComponent={({ date, state }) => {
-          const isMarked = !!markedDates[date.dateString];
+          const marking = markedDates[date.dateString];
+          const isMarked = !!marking;
+
           return (
             <TouchableOpacity
               onPress={() => navigation.navigate('WalkDay', { selectedDate: date.dateString })}
