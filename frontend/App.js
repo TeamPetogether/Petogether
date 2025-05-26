@@ -7,7 +7,7 @@ import SignupScreen from './screens/SignupScreen';
 import MainScreen from './screens/MainScreen';
 import DailyScreen from './screens/DailyScreen';
 import DayScreen from './screens/DayScreen';
-
+import WalkScreen from './screens/WalkScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -22,6 +22,7 @@ export default function App() {
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="Daily" component={DailyScreen} />
         <Stack.Screen name="Day" component={DayScreen} />
+        <Stack.Screen name="Walk" component={WalkScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

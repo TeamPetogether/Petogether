@@ -23,7 +23,7 @@ export default function MainScreen() {
 
         <TouchableOpacity
           style={styles.ovalButton}
-          onPress={() => console.log('산책 버튼 눌림')}
+          onPress={() => navigation.navigate('Walk')}
         >
           <Text style={styles.buttonText}>산책</Text>
         </TouchableOpacity>
