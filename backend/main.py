@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from . import models, schemas, crud
+from .models import Walk
 from .database import SessionLocal, engine
 import shutil, os
 import uuid  # uuid import 추가
@@ -96,3 +97,67 @@ def get_note_by_date(date: str):
             "image_path": note.image_path,
         }
     raise HTTPException(status_code=404, detail="No note found")
+
+# ✅ 1. 산책 기록 저장 또는 수정 (같은 날짜가 있으면 수정)
+@app.post("/walks/")
+async def create_or_update_walk(
+    date: str = Form(...),
+    walk_type: str = Form(...),
+    walk_path: str = Form(...),
+    walk_duration: str = Form(...),
+    memo: str = Form("")
+):
+    db: Session = SessionLocal()
+    existing = db.query(Walk).filter(Walk.date == date).first()
+
+    if existing:
+        existing.walk_type = walk_type
+        existing.walk_path = walk_path
+        existing.walk_duration = walk_duration
+        existing.memo = memo
+        db.commit()
+        return {"message": "산책 기록이 수정되었습니다"}
+    else:
+        new_walk = Walk(
+            date=date,
+            walk_type=walk_type,
+            walk_path=walk_path,
+            walk_duration=walk_duration,
+            memo=memo
+        )
+        db.add(new_walk)
+        db.commit()
+        db.refresh(new_walk)
+        return {"message": "산책 기록이 저장되었습니다"}
+    
+# ✅ 2. 산책 날짜 목록 조회 (달력 마커용)
+@app.get("/walks/dates")
+def get_walk_dates():
+    db: Session = SessionLocal()
+    dates = db.query(Walk.date).distinct().all()
+    return [d[0] for d in dates]
+
+# ✅ 3. 특정 날짜의 산책 기록 조회
+@app.get("/walks/{date}")
+def get_walk_by_date(date: str):
+    db: Session = SessionLocal()
+    walk = db.query(Walk).filter(Walk.date == date).first()
+    if walk:
+        return {
+            "date": walk.date,
+            "walk_type": walk.walk_type,
+            "walk_path": walk.walk_path,
+            "walk_duration": walk.walk_duration,
+            "memo": walk.memo
+        }
+    raise HTTPException(status_code=404, detail="산책 기록이 없습니다")
+
+# ✅ 4. 특정 날짜의 산책 기록 삭제
+@app.delete("/walks/{date}")
+def delete_walk_by_date(date: str):
+    db: Session = SessionLocal()
+    deleted = db.query(Walk).filter(Walk.date == date).delete()
+    db.commit()
+    if deleted:
+        return {"message": f"{date}의 산책 기록이 삭제되었습니다"}
+    raise HTTPException(status_code=404, detail="삭제할 기록이 없습니다")

@@ -17,3 +17,12 @@ class Note(Base):
     date = Column(String(255))  
     note = Column(String(1000))  
     image_path = Column(String(1000)) 
+
+class Walk(Base):
+    __tablename__ = "walks"
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(String(20), index=True)
+    walk_type = Column(String(100))
+    walk_path = Column(String(255))
+    walk_duration = Column(String(50))
+    memo = Column(String(1000))
