@@ -34,6 +34,13 @@ export default function MainScreen() {
         >
           <Text style={styles.buttonText}>접종</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.ovalButton}
+          onPress={() => navigation.navigate('BreedSelect')}
+        >
+          <Text style={styles.buttonText}>체크리스트</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -66,7 +73,8 @@ const styles = StyleSheet.create({
     borderColor: '#D9D9D9',
     borderRadius: 999,
     paddingVertical: 10,
-    paddingHorizontal: 40,
+    width: 200,
+    alignItems: 'center',
   },
   buttonText: {
     color: '#A1A5F5',
