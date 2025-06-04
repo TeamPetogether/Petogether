@@ -9,6 +9,7 @@ import DailyScreen from './screens/DailyScreen';
 import DayScreen from './screens/DayScreen';
 import WalkScreen from './screens/WalkScreen';
 import WalkDayScreen from './screens/WalkDayScreen';
+import BreedSelectScreen from './screens/BreedSelectScreen';
 const Stack = createNativeStackNavigator(); 
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
         <Stack.Screen name="Day" component={DayScreen} />
         <Stack.Screen name="Walk" component={WalkScreen} />
         <Stack.Screen name="WalkDay" component={WalkDayScreen} />
+        <Stack.Screen name="BreedSelect" component={BreedSelectScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
