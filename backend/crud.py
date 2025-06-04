@@ -45,3 +45,15 @@ def get_notes_dates(db: Session):
 
 def get_note_by_date(db: Session, date: str):
     return db.query(models.Note).filter(models.Note.date == date).first()
+
+def set_user_dog(db: Session, user_id: int, dog_breed_id: int):
+    existing = db.query(models.UserDog).filter_by(user_id=user_id).first()
+    if existing:
+        existing.dog_breed_id = dog_breed_id
+    else:
+        new_entry = models.UserDog(user_id=user_id, dog_breed_id=dog_breed_id)
+        db.add(new_entry)
+    db.commit()
+
+def get_user_dog_breed(db: Session, user_id: int):
+    return db.query(models.DogBreed).join(models.UserDog).filter(models.UserDog.user_id == user_id).first()
