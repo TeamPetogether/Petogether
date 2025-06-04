@@ -4,9 +4,12 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from . import models, schemas, crud
+from .models import Walk, DogBreed
 from .database import SessionLocal, engine
 import shutil, os
-import uuid  # uuid import 추가
+import uuid
+import json
+from datetime import datetime
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -96,3 +99,110 @@ def get_note_by_date(date: str):
             "image_path": note.image_path,
         }
     raise HTTPException(status_code=404, detail="No note found")
+
+# ✅ 1. 산책 기록 저장 또는 수정 (같은 날짜가 있으면 수정)
+@app.post("/walks/")
+async def create_or_update_walk(
+    date: str = Form(...),
+    walk_type: str = Form(...),
+    walk_path: str = Form(...),
+    walk_duration: str = Form(...),
+    memo: str = Form("")
+):
+    db: Session = SessionLocal()
+    existing = db.query(Walk).filter(Walk.date == date).first()
+
+    if existing:
+        existing.walk_type = walk_type
+        existing.walk_path = walk_path
+        existing.walk_duration = walk_duration
+        existing.memo = memo
+        db.commit()
+        return {"message": "산책 기록이 수정되었습니다"}
+    else:
+        new_walk = Walk(
+            date=date,
+            walk_type=walk_type,
+            walk_path=walk_path,
+            walk_duration=walk_duration,
+            memo=memo
+        )
+        db.add(new_walk)
+        db.commit()
+        db.refresh(new_walk)
+        return {"message": "산책 기록이 저장되었습니다"}
+    
+# ✅ 2. 산책 날짜 목록 조회 (달력 마커용)
+@app.get("/walks/dates")
+def get_walk_dates():
+    db: Session = SessionLocal()
+    dates = db.query(Walk.date).distinct().all()
+    return [d[0] for d in dates]
+
+# ✅ 3. 특정 날짜의 산책 기록 조회
+@app.get("/walks/{date}")
+def get_walk_by_date(date: str):
+    db: Session = SessionLocal()
+    walk = db.query(Walk).filter(Walk.date == date).first()
+    if walk:
+        return {
+            "date": walk.date,
+            "walk_type": walk.walk_type,
+            "walk_path": walk.walk_path,
+            "walk_duration": walk.walk_duration,
+            "memo": walk.memo
+        }
+    raise HTTPException(status_code=404, detail="산책 기록이 없습니다")
+
+# ✅ 4. 특정 날짜의 산책 기록 삭제
+@app.delete("/walks/{date}")
+def delete_walk_by_date(date: str):
+    db: Session = SessionLocal()
+    deleted = db.query(Walk).filter(Walk.date == date).delete()
+    db.commit()
+    if deleted:
+        return {"message": f"{date}의 산책 기록이 삭제되었습니다"}
+    raise HTTPException(status_code=404, detail="삭제할 기록이 없습니다")
+
+# 견종 데이터 로드 엔드포인트
+@app.post("/dogbreeds")
+def load_dog_breeds():
+    db = SessionLocal()
+    with open("dogbreed.json", "r", encoding="utf-8") as f:
+        breeds = json.load(f)
+
+    count = 0
+    for breed in breeds:
+        if db.query(DogBreed).filter(DogBreed.name == breed["name"]).first():
+            continue  # 이미 있으면 건너뜀
+
+        new_breed = DogBreed(
+            name=breed["name"],
+            walk_count=breed["walk_frequency"],
+            walk_duration=breed["walk_duration"],
+            health_warning=breed["health_warning"],
+            notes=breed["extra_notes"]
+        )
+        db.add(new_breed)
+        count += 1
+
+    db.commit()
+    return {"message": f"✅ {count}개의 견종 데이터를 삽입했습니다."}
+
+@app.post("/user/dog")
+def assign_dog_breed(info: schemas.UserDogCreate, db: Session = Depends(get_db)):
+    crud.set_user_dog(db, info.user_id, info.dog_breed_id)
+    return {"message": "견종이 등록되었습니다."}
+
+@app.get("/user/dog/{user_id}")
+def get_user_dog(user_id: int, db: Session = Depends(get_db)):
+    dog = crud.get_user_dog_breed(db, user_id)
+    if dog:
+        return {
+            "name": dog.name,
+            "walk_count": dog.walk_count,
+            "walk_duration": dog.walk_duration,
+            "health_warning": dog.health_warning,
+            "notes": dog.notes
+        }
+    raise HTTPException(status_code=404, detail="견종 정보가 없습니다.")
