@@ -30,7 +30,7 @@ export default function MainScreen() {
 
         <TouchableOpacity
           style={styles.ovalButton}
-          onPress={() => console.log('접종 버튼 눌림')}
+          onPress={() => navigation.navigate('Vaccination')}
         >
           <Text style={styles.buttonText}>접종</Text>
         </TouchableOpacity>
