@@ -4,10 +4,13 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from . import models, schemas, crud
-from .models import Walk
+from .models import Walk, DogBreed
+
 from .database import SessionLocal, engine
 import shutil, os
-import uuid  # uuid import 추가
+import uuid
+import json
+from datetime import datetime
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -161,3 +164,46 @@ def delete_walk_by_date(date: str):
     if deleted:
         return {"message": f"{date}의 산책 기록이 삭제되었습니다"}
     raise HTTPException(status_code=404, detail="삭제할 기록이 없습니다")
+
+# 견종 데이터 로드 엔드포인트
+@app.post("/dogbreeds")
+def load_dog_breeds():
+    db = SessionLocal()
+    with open("dogbreed.json", "r", encoding="utf-8") as f:
+        breeds = json.load(f)
+
+    count = 0
+    for breed in breeds:
+        if db.query(DogBreed).filter(DogBreed.name == breed["name"]).first():
+            continue  # 이미 있으면 건너뜀
+
+        new_breed = DogBreed(
+            name=breed["name"],
+            walk_count=breed["walk_frequency"],
+            walk_duration=breed["walk_duration"],
+            health_warning=breed["health_warning"],
+            notes=breed["extra_notes"]
+        )
+        db.add(new_breed)
+        count += 1
+
+    db.commit()
+    return {"message": f"✅ {count}개의 견종 데이터를 삽입했습니다."}
+
+@app.post("/user/dog")
+def assign_dog_breed(info: schemas.UserDogCreate, db: Session = Depends(get_db)):
+    crud.set_user_dog(db, info.user_id, info.dog_breed_id)
+    return {"message": "견종이 등록되었습니다."}
+
+@app.get("/user/dog/{user_id}")
+def get_user_dog(user_id: int, db: Session = Depends(get_db)):
+    dog = crud.get_user_dog_breed(db, user_id)
+    if dog:
+        return {
+            "name": dog.name,
+            "walk_count": dog.walk_count,
+            "walk_duration": dog.walk_duration,
+            "health_warning": dog.health_warning,
+            "notes": dog.notes
+        }
+    raise HTTPException(status_code=404, detail="견종 정보가 없습니다.")

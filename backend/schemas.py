@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 class UserCreate(BaseModel):
     nickname: str
@@ -20,3 +21,7 @@ class NoteResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class UserDogCreate(BaseModel):
+    user_id: int
+    dog_breed_id: int
