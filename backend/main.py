@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from . import models, schemas, crud
 from .models import Walk, DogBreed
+
 from .database import SessionLocal, engine
 import shutil, os
 import uuid
