@@ -23,7 +23,7 @@ export default function MainScreen() {
 
         <TouchableOpacity
           style={styles.ovalButton}
-          onPress={() => console.log('산책 버튼 눌림')}
+          onPress={() => navigation.navigate('Walk')}
         >
           <Text style={styles.buttonText}>산책</Text>
         </TouchableOpacity>
@@ -33,6 +33,13 @@ export default function MainScreen() {
           onPress={() => console.log('접종 버튼 눌림')}
         >
           <Text style={styles.buttonText}>접종</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.ovalButton}
+          onPress={() => navigation.navigate('BreedSelect')}
+        >
+          <Text style={styles.buttonText}>체크리스트</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -66,7 +73,8 @@ const styles = StyleSheet.create({
     borderColor: '#D9D9D9',
     borderRadius: 999,
     paddingVertical: 10,
-    paddingHorizontal: 40,
+    width: 200,
+    alignItems: 'center',
   },
   buttonText: {
     color: '#A1A5F5',

@@ -70,3 +70,4 @@ def create_check_history(db: Session, history: schemas.CheckHistoryCreate):
 
 def get_all_check_history(db: Session):
     return db.query(models.CheckHistory).order_by(models.CheckHistory.date.desc()).all()
+

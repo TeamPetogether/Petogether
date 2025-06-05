@@ -53,3 +53,4 @@ class CheckHistory(Base):
     date = Column(DateTime, default=datetime.utcnow)
     message = Column(String(255))
     note = Column(String(500))
+

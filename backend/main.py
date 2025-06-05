@@ -205,6 +205,7 @@ def get_user_dog(user_id: int, db: Session = Depends(get_db)):
             "health_warning": dog.health_warning,
             "notes": dog.notes
         }
+
     raise HTTPException(status_code=404, detail="견종 정보가 없습니다.")
 
 from fastapi import APIRouter, Depends
