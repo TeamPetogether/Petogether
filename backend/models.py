@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Date, Boolean, Text
 from .database import Base
 from datetime import datetime
 
@@ -54,3 +54,14 @@ class CheckHistory(Base):
     message = Column(String(255))
     note = Column(String(500))
 
+class Vaccination(Base):
+    __tablename__ = "vaccinations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer)
+    name = Column(String(100))
+    scheduled_date = Column(String(50))
+    is_done = Column(Boolean, default=False)
+    had_allergy = Column(Boolean, default=False)
+    allergy_description = Column(String(255))
+    note = Column(String(500))

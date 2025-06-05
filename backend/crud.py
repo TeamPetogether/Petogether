@@ -71,3 +71,27 @@ def create_check_history(db: Session, history: schemas.CheckHistoryCreate):
 def get_all_check_history(db: Session):
     return db.query(models.CheckHistory).order_by(models.CheckHistory.date.desc()).all()
 
+
+def get_vaccinations_by_user(db, user_id):
+    return db.query(models.Vaccination).filter(models.Vaccination.user_id == user_id).all()
+
+def create_vaccination(db, vac):
+    new = models.Vaccination(**vac.dict())
+    db.add(new)
+    db.commit()
+    db.refresh(new)
+    return new
+
+def update_vaccination(db, id, vac):
+    existing = db.query(models.Vaccination).filter(models.Vaccination.id == id).first()
+    if not existing:
+        raise HTTPException(status_code=404, detail="접종 항목을 찾을 수 없습니다.")
+    for key, value in vac.dict().items():
+        setattr(existing, key, value)
+    db.commit()
+    return existing
+
+def delete_vaccination(db, id):
+    deleted = db.query(models.Vaccination).filter(models.Vaccination.id == id).delete()
+    db.commit()
+    return {"message": "삭제되었습니다"} if deleted else HTTPException(status_code=404, detail="삭제 실패")

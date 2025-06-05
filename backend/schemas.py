@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
+from datetime import date
 
 class UserCreate(BaseModel):
     nickname: str
@@ -34,6 +36,34 @@ class CheckHistoryOut(BaseModel):
     date: datetime
     message: str
     note: str
+
+    class Config:
+        orm_mode = True
+
+class VaccinationBase(BaseModel):
+    name: str
+    scheduled_date: str
+    is_done: bool
+    had_allergy: bool
+    allergy_description: Optional[str] = ""
+    note: Optional[str] = ""
+
+class VaccinationCreate(VaccinationBase):
+    user_id: int
+
+class VaccinationUpdate(VaccinationBase):
+    pass
+
+class VaccinationOut(BaseModel):
+    id: int
+    user_id: int
+    name: str
+    scheduled_date: Optional[date]
+    is_done: bool
+    completed_date: Optional[date]
+    had_allergy: Optional[bool]
+    allergy_description: Optional[str]
+    note: Optional[str]
 
     class Config:
         orm_mode = True
