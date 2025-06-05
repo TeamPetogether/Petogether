@@ -111,7 +111,7 @@ export default function BreedSelectScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🐶 견종 선택 🐶</Text>
+      <Text style={styles.title}>📋 체크리스트 📋</Text>
 
       <View style={styles.pickerRow}>
         <View style={styles.pickerWrapper}>
