@@ -1,6 +1,6 @@
 // screens/MainScreen.js
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function MainScreen() {
@@ -8,6 +8,7 @@ export default function MainScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Image source={require('../assets/Petogether.png')} style={styles.logoImage} />
       <Text style={styles.logo}>
         <Text style={styles.logoGreen}>PET</Text>
         <Text style={styles.logoBrown}>OGETHER</Text>
@@ -50,8 +51,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF9F1',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingTop: 100,
+  },
+  logoImage: {
+    width: 120,
+    height: 120,
+    marginTop: 110,
+    marginBottom: 10,
+    resizeMode: 'contain',
   },
   logo: {
     fontSize: 36,
