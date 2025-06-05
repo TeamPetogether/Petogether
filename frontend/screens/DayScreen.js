@@ -87,7 +87,7 @@ export default function DayScreen({ route }) {
 
       const result = await res.json();
       console.log(result);
-      Alert.alert('저장 성공', '서버에 메모가 저장되었습니다!');
+      Alert.alert('수정 완료', result.message || '기록이 수정되었습니다!');
     } catch (err) {
       console.error(err);
       Alert.alert('에러', '저장 중 문제가 발생했습니다.');
