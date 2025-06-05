@@ -130,7 +130,7 @@ export default function BreedSelectScreen() {
               inputIOS: styles.pickerText,
               inputAndroid: styles.pickerText,
               iconContainer: {
-                top: 15,
+                top: 8,
                 right: 10,
               },
             }}
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   submitButton: {
-    backgroundColor: '#66A95A',
+    backgroundColor: '#A1A5F5',
     padding: 16,
     borderRadius: 10,
     alignItems: 'center',
@@ -289,9 +289,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   historyButton: {
-    marginTop: 10,
+    marginTop: 20,
     backgroundColor: '#66A95A',
-    padding: 16,
+    padding: 12,
+
     borderRadius: 10,
     alignItems: 'center',
   },

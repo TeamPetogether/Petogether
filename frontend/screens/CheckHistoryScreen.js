@@ -47,10 +47,10 @@ export default function CheckHistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF9F1', padding: 16 },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20, color: '#66A95A', textAlign: 'center' },
-  headerRow: { flexDirection: 'row', borderBottomWidth: 2, borderColor: '#aaa', paddingBottom: 8, marginBottom: 8 },
-  header: { flex: 1, fontWeight: 'bold', color: '#555' },
+  container: {flex: 1, backgroundColor: '#FFF9F1', padding: 16 },
+  title: { marginTop: 100, fontSize: 25, fontWeight: 'bold', marginBottom: 20, color: '#66A95A', textAlign: 'center' },
+  headerRow: { marginTop: 20, flexDirection: 'row', borderBottomWidth: 2, borderColor: '#aaa', paddingBottom: 8, marginBottom: 8 },
+  header: { flex: 1, fontSize: 18,fontWeight: 'bold', color: '#555' },
   row: { flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderColor: '#ddd' },
   cell: { flex: 1, fontSize: 14, color: '#333' },
 });
