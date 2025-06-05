@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, Depends, UploadFile, File, Form, HTTPException, Path, Body
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -245,3 +245,19 @@ def read_check_history(db: Session = Depends(get_db)):
             "note": h.note
         })
     return result
+
+@app.get("/vaccinations/{user_id}")
+def get_vaccinations(user_id: int, db: Session = Depends(get_db)):
+    return crud.get_vaccinations_by_user(db, user_id)
+
+@app.post("/vaccinations")
+def create_vaccination(vac: schemas.VaccinationCreate, db: Session = Depends(get_db)):
+    return crud.create_vaccination(db, vac)
+
+@app.put("/vaccinations/{id}")
+def update_vaccination(id: int, vac: schemas.VaccinationUpdate, db: Session = Depends(get_db)):
+    return crud.update_vaccination(db, id, vac)
+
+@app.delete("/vaccinations/{id}")
+def delete_vaccination(id: int, db: Session = Depends(get_db)):
+    return crud.delete_vaccination(db, id)
