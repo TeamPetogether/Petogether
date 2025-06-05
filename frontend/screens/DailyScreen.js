@@ -35,7 +35,7 @@ export default function DailyScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🐱 Daily 🐶</Text>
+      <Text style={styles.title}>🐱 데일리 🐶</Text>
       <Calendar
         markingType={'custom'}
         markedDates={markedDates}

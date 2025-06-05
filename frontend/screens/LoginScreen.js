@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  Image
 } from 'react-native';
 import { API_BASE_URL } from '../constants';
 
@@ -53,6 +54,7 @@ export default function LoginScreen({ navigation }) {
   
     return (
     <SafeAreaView style={styles.container}>
+      <Image source={require('../assets/Heart.png')} style={styles.heartImage} />
       <Text style={styles.logo}>
         <Text style={styles.logoGreen}>Pet</Text>
         <Text style={styles.logoBrown}>ogether</Text>
@@ -92,8 +94,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF9F1',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     paddingHorizontal: 24,
+    paddingTop: 60,
+  },
+  heartImage: {
+    width: 80,
+    height: 80,
+    marginTop: 170,
+    marginBottom: 10,
+    resizeMode: 'contain',
   },
   logo: {
     fontSize: 36,
@@ -107,29 +117,29 @@ const styles = StyleSheet.create({
     color: '#B59440',
   },
   form: {
-    width: '100%',
+    width: '80%',
     marginBottom: 30,
   },
   input: {
-    height: 48,
+    height: 38,
     backgroundColor: '#fff',
     borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    fontSize: 16,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    fontSize: 14,
   },
   button: {
     backgroundColor: '#A1A5F5',
-    paddingVertical: 14,
+    paddingVertical: 10,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 8,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   signupText: {
