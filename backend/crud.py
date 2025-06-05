@@ -57,3 +57,17 @@ def set_user_dog(db: Session, user_id: int, dog_breed_id: int):
 
 def get_user_dog_breed(db: Session, user_id: int):
     return db.query(models.DogBreed).join(models.UserDog).filter(models.UserDog.user_id == user_id).first()
+
+def create_check_history(db: Session, history: schemas.CheckHistoryCreate):
+    db_history = models.CheckHistory(
+        message=history.message,
+        note=history.note
+    )
+    db.add(db_history)
+    db.commit()
+    db.refresh(db_history)
+    return db_history
+
+def get_all_check_history(db: Session):
+    return db.query(models.CheckHistory).order_by(models.CheckHistory.date.desc()).all()
+

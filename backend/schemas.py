@@ -25,3 +25,15 @@ class NoteResponse(BaseModel):
 class UserDogCreate(BaseModel):
     user_id: int
     dog_breed_id: int
+
+class CheckHistoryCreate(BaseModel):
+    message: str
+    note: str
+
+class CheckHistoryOut(BaseModel):
+    date: datetime
+    message: str
+    note: str
+
+    class Config:
+        orm_mode = True

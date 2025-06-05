@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from . import models, schemas, crud
 from .models import Walk, DogBreed
-
 from .database import SessionLocal, engine
 import shutil, os
 import uuid
@@ -206,4 +205,43 @@ def get_user_dog(user_id: int, db: Session = Depends(get_db)):
             "health_warning": dog.health_warning,
             "notes": dog.notes
         }
+
     raise HTTPException(status_code=404, detail="견종 정보가 없습니다.")
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from . import models, schemas
+from .database import SessionLocal
+
+@app.get("/dogbreeds")
+def get_dog_breeds():
+    db = SessionLocal()
+    breeds = db.query(models.DogBreed).all()
+    return [
+        {
+            "name": breed.name,
+            "walk_count": breed.walk_count,
+            "walk_duration": breed.walk_duration,
+            "health_warning": breed.health_warning,
+            "notes": breed.notes
+        }
+        for breed in breeds
+    ]
+
+@app.post("/check-history")
+def save_check(history: schemas.CheckHistoryCreate, db: Session = Depends(get_db)):
+    return crud.create_check_history(db, history)
+
+@app.get("/check-history")
+def read_check_history(db: Session = Depends(get_db)):
+    history_list = crud.get_all_check_history(db)
+    result = []
+    for h in history_list:
+        # 날짜를 "YYYY-MM-DD HH:mm:ss" 형식으로 포맷
+        formatted_date = h.date.strftime("%Y-%m-%d %H:%M:%S")
+        result.append({
+            "date": formatted_date,
+            "message": h.message,
+            "note": h.note
+        })
+    return result

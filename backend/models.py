@@ -46,3 +46,11 @@ class UserDog(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     dog_breed_id = Column(Integer, ForeignKey("dog_breeds.id"))
 
+class CheckHistory(Base):
+    __tablename__ = "check_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(DateTime, default=datetime.utcnow)
+    message = Column(String(255))
+    note = Column(String(500))
+
