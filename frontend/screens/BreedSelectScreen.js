@@ -111,7 +111,7 @@ export default function BreedSelectScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🐶 견종 선택</Text>
+      <Text style={styles.title}>🐶 견종 선택 🐶</Text>
 
       <View style={styles.pickerRow}>
         <View style={styles.pickerWrapper}>
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   },
   historyButton: {
     marginTop: 20,
-    backgroundColor: '#66A95A',
+    backgroundColor: '#9ACA70',
     padding: 12,
 
     borderRadius: 10,

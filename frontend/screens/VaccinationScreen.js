@@ -86,7 +86,7 @@ export default function VaccinationScreen() {
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
-      <Text style={styles.title}>💉 접종 관리</Text>
+      <Text style={styles.title}>💉 접종 관리 💉</Text>
 
       {items.map((item, index) => (
         <View
