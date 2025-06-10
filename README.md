@@ -1,52 +1,128 @@
-## 🐶 Petogether: 반려동물 다이어리 & 케어 기록 앱
+# 🐶 Petogether: 반려동물 다이어리 & 케어 기록 앱
 
-**Petogether**는 `Pet + Together`의 합성어로,
-반려동물과의 **추억**, **일정**, **건강 상태**를 함께 기록하고 관리할 수 있는
-**올인원 다이어리 앱**입니다.
+**Petogether**는 `Pet + Together`의 합성어로, 가족 구성원 모두가 **강아지의 추억**, **건강**, **산책**, **접종**을 함께 관리할 수 있는 **올인원 다이어리 앱**입니다.
 
 ---
 
-### 🔑 주요 기능
+## 🔑 주요 기능
 
-1. **다이어리 기록**
+1. **데일리 다이어리**
+   - 강아지의 사진과 메모를 날짜별로 저장
+   - 가족 간 공유 가능 (캘린더 기반 UI)
 
-   * 반려동물의 사진과 메모를 날짜별로 저장
+2. **산책 기록 기능**
+   - 산책 날짜별로 강아지의 산책 유형/경로/시간 기록
+   - 품종별 권장 산책 횟수와 비교 가능
 
-2. **산책 체크 기능**
+3. **견종 맞춤 케어**
+   - 견종을 선택하면 해당 품종의 건강 유의사항/산책 권장 횟수 자동 안내
+   - 매일 체크리스트 제공 (ex. 산책 횟수 충분한가요?)
 
-   * 산책 여부를 개별 반려동물별로 관리
+4. **접종 관리 투두리스트**
+   - 접종 종류, 예정일, 알러지 반응, 메모 등을 기록
+   - 항목별 완료/수정/삭제 기능 지원
 
-3. **캘린더 일정 관리**
-
-   * 예방접종, 미용 등 주기적 스케줄 등록 및 알림
-
-4. **건강 상태 기록**
-
-   * 진료 내역 업로드 및 품종별 건강 정보 제공
-
----
-
-### 🛠 사용한 주요 오픈소스
-
-* **Pet Reminder** – 반려동물 일정 알림 오픈소스 활용
-* (기타 오픈소스는 구현 단계에 따라 추가)
-
----
-
-### 📌 API 구성 (요약)
-
-| 기능       | 메서드     | 설명                |
-| -------- | ------- | ----------------- |
-| 다이어리 작성  | `POST`  | 텍스트, 사진, 날짜 저장    |
-| 일정 등록    | `POST`  | 진료·미용 일정 추가       |
-| 산책 기록    | `PATCH` | 반려동물별 산책 여부 업데이트  |
-| 건강 기록    | `POST`  | 진료 내역 업로드 및 메모    |
-| 종별 정보 조회 | `GET`   | 품종에 따른 건강 유의사항 제공 |
+<h3>📱 앱 미리보기</h3>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6585edea-739a-44ba-8c7f-46aa51f0eeb2" width="150"/>
+  <img src="https://github.com/user-attachments/assets/fc5a7036-980d-44de-b5b9-9c6fe42eb221" width="150"/>
+  <img src="https://github.com/user-attachments/assets/45c8c610-8e55-448e-bd88-df2147edf8a6" width="150"/>
+  <img src="https://github.com/user-attachments/assets/d1ca25da-9fe1-411b-a6a3-f44b60fb3577" width="150"/>
+  <img src="https://github.com/user-attachments/assets/32dd1fde-76ac-4d70-ae94-4d02a041ba2d" width="150"/>
+  <img src="https://github.com/user-attachments/assets/c0e4718d-6969-4dc7-8504-217a3b024777" width="150"/>
+  <img src="https://github.com/user-attachments/assets/729c3906-b4c1-42e9-93e9-58faf5337719" width="150"/>
+  <img src="https://github.com/user-attachments/assets/15620d80-4455-4a1e-a8b0-b9c5616d020b" width="150"/>
+  <img src="https://github.com/user-attachments/assets/1f339bc2-4d15-43ab-92cb-f9b776ade362" width="150"/>
+  <img src="https://github.com/user-attachments/assets/331e3a59-b858-49a0-b704-4ccdc51e5c1a" width="150"/>
+  <img src="https://github.com/user-attachments/assets/f1bc0ea2-5b30-4bf5-bf26-a256993210d0" width="150"/>
+</p>
 
 ---
 
-### 👨‍👩‍👧‍👦 팀원 소개
+## ⚙️ 프로젝트 실행 방법
 
-* **상아**: 백엔드 담당 (소프트웨어학과)
-* **성은**: 백엔드 서브 (정보통계학과)
-* **재노**: 프론트엔드 담당 (모바일시스템공학과)
+### 📱 Expo 실행 (프론트엔드)
+
+```bash
+npx expo start -c
+```
+
+### 🐍 FastAPI 서버 실행 (백엔드)
+
+```bash
+uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### 🐬 MySQL 시작
+
+```bash
+brew services start mysql
+mysql -u root -p   # 비밀번호: petogether123!
+```
+
+### 🐬 MySQL 명령어
+
+```sql
+SHOW DATABASES;
+USE petogether;
+SHOW TABLES;
+SELECT * FROM users;
+DELETE FROM users WHERE id = 1;
+```
+
+### 📡 포트 확인 및 종료
+
+```bash
+lsof -i :8081
+kill -9 <PID>
+```
+
+### 📡 맥 로컬 IP 확인
+
+```bash
+ipconfig getifaddr en0  # constants.js에 IP 직접 입력 필요
+```
+
+---
+
+## 🔌 사용한 오픈소스
+
+- [next-realworld-example-app](https://github.com/reck1ess/next-realworld-example-app)
+- [DailyNotes](https://github.com/m0ngr31/DailyNotes)
+- [react-native-date-picker](https://github.com/DieTime/react-native-date-picker)
+- [Habo](https://github.com/xpavle00/Habo)
+- [dog_traits_AKC](https://github.com/kkakey/dog_traits_AKC)
+- [React Native Todo List](https://github.com/ImanAdithya/React-Native-Todo-List)
+
+---
+
+## 📦 API 구성 (요약)
+
+| 기능        | 메서드    | URL                | 설명                |
+| --------- | ------ | ------------------ | ----------------- |
+| 유저 생성     | POST   | /signup            | 이메일, 비밀번호, 닉네임 등록 |
+| 다이어리 저장   | POST   | /notes/            | 날짜별 사진/메모 저장      |
+| 다이어리 조회   | GET    | /notes/{date}      | 특정 날짜 메모 조회       |
+| 산책 저장/수정  | POST   | /walks/            | 날짜별 산책 기록 등록/업데이트 |
+| 산책 기록 조회  | GET    | /walks/{date}      | 특정 날짜 산책 기록 조회    |
+| 접종 등록     | POST   | /vaccinations      | 접종 항목 생성          |
+| 접종 수정     | PUT    | /vaccinations/{id} | 접종 항목 수정          |
+| 접종 삭제     | DELETE | /vaccinations/{id} | 접종 항목 삭제          |
+| 견종 목록 조회  | GET    | /dogbreeds         | 견종 정보 리스트 반환      |
+| 사용자 견종 저장 | POST   | /userdog           | 선택 견종 저장 (별도 테이블) |
+
+---
+
+## 👨‍👩‍👧‍👦 팀원 소개
+
+| 이름 | 역할     | 학과        |
+| -- | ------ | --------- |
+| 상아 | 백엔드    | 소프트웨어학과   |
+| 성은 | 백엔드 서브 | 정보통계학과    |
+| 재노 | 프론트엔드  | 모바일시스템공학과 |
+
+---
+
+> 모든 가족이 함께 반려견의 추억과 건강을 기록하는 **Petogether**
+>
+> 지금 바로 시작해보세요 🐾
