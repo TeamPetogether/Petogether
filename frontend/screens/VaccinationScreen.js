@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TextInput,
   TouchableOpacity, Alert, Switch
@@ -8,6 +8,7 @@ import { API_BASE_URL } from '../constants';
 export default function VaccinationScreen() {
   const userId = 1;
   const [items, setItems] = useState([]);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/vaccinations/${userId}`)
@@ -24,7 +25,6 @@ export default function VaccinationScreen() {
 
   const handleAddItem = () => {
     setItems(prev => [
-      ...prev,
       {
         name: '',
         scheduled_date: '',
@@ -32,8 +32,14 @@ export default function VaccinationScreen() {
         had_allergy: false,
         allergy_description: '',
         note: ''
-      }
+      },
+      ...prev
     ]);
+    setTimeout(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({ y: 0, animated: true });
+      }
+    }, 100);
   };
 
   const handleSaveItem = async (index) => {
@@ -85,8 +91,13 @@ export default function VaccinationScreen() {
   };
 
   return (
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
-      <Text style={styles.title}>💉 접종 관리</Text>
+    <ScrollView
+      ref={scrollRef}
+      style={{ flex: 1 }}
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={true}
+    >
+      <Text style={styles.title}>💉 접종 관리 💉</Text>
 
       {items.map((item, index) => (
         <View
@@ -101,12 +112,14 @@ export default function VaccinationScreen() {
             placeholder="예: 광견병"
             value={item.name}
             onChangeText={(val) => updateField(index, 'name', val)}
+            placeholderTextColor="#888"
           />
           <TextInput
             style={styles.input}
             placeholder="예정일 (예: 2025-06-30)"
             value={item.scheduled_date}
             onChangeText={(val) => updateField(index, 'scheduled_date', val)}
+            placeholderTextColor="#888"
           />
 
           <View style={styles.switchRow}>
@@ -132,15 +145,17 @@ export default function VaccinationScreen() {
               placeholder="예: 부기, 구토"
               value={item.allergy_description}
               onChangeText={(val) => updateField(index, 'allergy_description', val)}
+              placeholderTextColor="#888"
             />
           )}
 
           <TextInput
             style={styles.input}
-            placeholder="메모 (예: 오전 9시 접종)"
+            placeholder="특이사항"
             value={item.note}
             onChangeText={(val) => updateField(index, 'note', val)}
             multiline
+            placeholderTextColor="#888"
           />
 
           <TouchableOpacity

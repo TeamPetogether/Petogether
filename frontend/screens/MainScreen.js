@@ -1,6 +1,6 @@
 // screens/MainScreen.js
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function MainScreen() {
@@ -8,39 +8,33 @@ export default function MainScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Image source={require('../assets/Petogether.png')} style={styles.logoImage} />
       <Text style={styles.logo}>
         <Text style={styles.logoGreen}>PET</Text>
         <Text style={styles.logoBrown}>OGETHER</Text>
       </Text>
 
-      <View style={styles.buttonWrapper}>
-        <TouchableOpacity
-          style={styles.ovalButton}
-          onPress={() => navigation.navigate('Daily')}  // ✅ DailyScreen으로 이동
-        >
-          <Text style={styles.buttonText}>데일리</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.ovalButton}
-          onPress={() => navigation.navigate('Walk')}
-        >
-          <Text style={styles.buttonText}>산책</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.ovalButton}
-          onPress={() => navigation.navigate('Vaccination')}
-        >
-          <Text style={styles.buttonText}>접종</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.ovalButton}
-          onPress={() => navigation.navigate('BreedSelect')}
-        >
-          <Text style={styles.buttonText}>체크리스트</Text>
-        </TouchableOpacity>
+      <View style={styles.grid}>
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.squareButton} onPress={() => navigation.navigate('Daily')}>
+            <Text style={styles.icon}>💖</Text>
+            <Text style={styles.menuText}>데일리</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.squareButton} onPress={() => navigation.navigate('Walk')}>
+            <Text style={styles.icon}>🌱</Text>
+            <Text style={styles.menuText}>산책</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.squareButton} onPress={() => navigation.navigate('Vaccination')}>
+            <Text style={styles.icon}>💉</Text>
+            <Text style={styles.menuText}>접종</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.squareButton} onPress={() => navigation.navigate('BreedSelect')}>
+            <Text style={styles.icon}>📋</Text>
+            <Text style={styles.menuText}>체크</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -50,13 +44,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF9F1',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingTop: 100,
+  },
+  logoImage: {
+    width: 120,
+    height: 120,
+    marginTop: 110,
+    marginBottom: 10,
+    resizeMode: 'contain',
   },
   logo: {
     fontSize: 36,
     fontWeight: 'bold',
-    marginBottom: 50,
+    marginBottom: 20,
   },
   logoGreen: {
     color: '#66A95A',
@@ -64,21 +66,32 @@ const styles = StyleSheet.create({
   logoBrown: {
     color: '#B59440',
   },
-  buttonWrapper: {
-    gap: 20,
-    alignItems: 'center',
+  grid: {
+    marginTop: 30,
   },
-  ovalButton: {
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  squareButton: {
+    width: 120,
+    height: 120,
+    backgroundColor: '#fff',
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: '#D9D9D9',
-    borderRadius: 999,
-    paddingVertical: 10,
-    width: 200,
     alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
   },
-  buttonText: {
+  icon: {
+    fontSize: 36,
+    marginBottom: 8,
+  },
+  menuText: {
+    fontSize: 18,
     color: '#A1A5F5',
-    fontSize: 20,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
 });

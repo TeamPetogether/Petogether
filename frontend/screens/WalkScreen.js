@@ -45,7 +45,7 @@ export default function WalkScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🌳 Walk Record 🌱</Text>
+      <Text style={styles.title}>🌳 산책 기록 🌱</Text>
       <Calendar
         markingType={'custom'}
         markedDates={markedDates}
